@@ -68,4 +68,12 @@ This is my capstone project for Summer Rustcamp 2024. Telegram bot allows users 
 - Adding non-question sections(plain text, images, media)
 - Support for HTML/Markdown formats
 - Adding open questions
-- Quizes' results analytics  
+- Quizes' results analytics
+
+## Examples
+### Creating quiz
+<video src="media/creating-quiz.mp4" controls></video>
+### Running quiz
+<video src="media/running-quiz.mp4" controls></video>
+### Editing quiz
+<video src="media/editing_quiz.mp4" controls></video>
