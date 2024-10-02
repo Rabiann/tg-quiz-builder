@@ -72,8 +72,8 @@ This is my capstone project for Summer Rustcamp 2024. Telegram bot allows users 
 
 ## Examples
 ### Creating quiz
-<video src="media/creating-quiz.mp4" width="240px" height="240px" controls></video>
+![Creating quiz gif](media/creating-quiz.gif)
 ### Running quiz
-<video src="media/running-quiz.mp4" controls></video>
+![Running quiz gif](media/running-quiz.gif)
 ### Editing quiz
-<video src="media/editing_quiz.mp4" controls></video>
+![Editing quiz gif](media/editing-quiz.gif)
