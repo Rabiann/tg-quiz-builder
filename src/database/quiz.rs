@@ -31,7 +31,7 @@ impl fmt::Display for Quiz {
         for question in self.questions() {
             questions.push_str(&format!("# {}\n", question.to_string()));
         }
-        write!(f, "<b>{}</b>\n<i>{}</i>\n\nBy @{}\n\nQuestions:{}", self.title(), self.description(), self.author(), questions)
+        write!(f, "Title: {}\nDescription: {}\n\nBy @{}\n\nQuestions:{}\n", self.title(), self.description(), self.author(), questions)
     }
 }
 
@@ -43,7 +43,7 @@ impl fmt::Display for Question {
         }
         answers.push('\n');
 
-        write!(f, "__{}__\n{}", self.text(), answers)
+        write!(f, "{}\n{}", self.text(), answers)
     }
 }
 
