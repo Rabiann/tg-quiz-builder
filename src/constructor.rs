@@ -8,7 +8,7 @@ use crate::keyboard::{action_keyboard, yes_no_keyboard};
 use crate::state::{QuizData, QuizState};
 use crate::{HandlerResult, UserDialogue};
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn receive_quiz_description<DbConnection: RetreiveQuiz>(
     bot: Bot,
     dialogue: UserDialogue,
@@ -43,7 +43,7 @@ pub(crate) async fn receive_quiz_description<DbConnection: RetreiveQuiz>(
 
     Ok(())
 }
-#[instrument(level = "info")]
+#[instrument(level = "info", skip(dialogue, bot))]
 pub(crate) async fn receive_quiz_author(
     bot: Bot,
     dialogue: UserDialogue,
@@ -84,7 +84,7 @@ pub(crate) async fn receive_quiz_author(
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn receive_new_question<DbConnection: CreateQuiz>(
     bot: Bot,
     dialogue: UserDialogue,
@@ -141,7 +141,7 @@ pub(crate) async fn receive_new_question<DbConnection: CreateQuiz>(
     Ok(())
 }
 
-#[instrument(level = "info")]
+#[instrument(level = "info", skip(bot, dialogue))]
 pub(crate) async fn receive_new_answer(
     bot: Bot,
     dialogue: UserDialogue,
@@ -174,7 +174,7 @@ pub(crate) async fn receive_new_answer(
     Ok(())
 }
 
-#[instrument(level = "info")]
+#[instrument(level = "info", skip(bot, dialogue))]
 pub(crate) async fn receive_answer_is_correct(
     bot: Bot,
     dialogue: UserDialogue,
@@ -211,7 +211,7 @@ pub(crate) async fn receive_answer_is_correct(
     Ok(())
 }
 
-#[instrument(level = "info")]
+#[instrument(level = "info", skip(bot, dialogue))]
 pub(crate) async fn receive_add_another_answer_or_question(
     bot: Bot,
     dialogue: UserDialogue,
@@ -280,7 +280,7 @@ pub(crate) async fn receive_add_another_answer_or_question(
     Ok(())
 }
 
-#[instrument(level = "info")]
+#[instrument(level = "info", skip(bot, dialogue))]
 pub(crate) async fn receive_add_new_answer(
     bot: Bot,
     dialogue: UserDialogue,

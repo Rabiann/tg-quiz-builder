@@ -4,7 +4,7 @@ use teloxide::{payloads::SendMessageSetters, prelude::Requester, types::Message,
 use tracing::instrument;
 
 use crate::{database::{connection::{CreateAnswer, CreateQuestion, DeleteAnswer, DeleteQuestion, DeleteQuiz, EditAnswer, EditQuestion, EditQuiz, RetreiveAnswer, RetreiveQuestion, RetreiveQuiz}, quiz::Quiz}, keyboard::{self, edit_question_keyboard, yes_no_keyboard}, state::QuizState, Command, HandlerResult, UserDialogue};
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn edit_corectness<Connect: EditAnswer>(bot: Bot, msg: Message, dialogue: UserDialogue, (quiz_name, question_name, answer_name): (String, String, String), connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some("Yes") | Some("Yes✔") => {
@@ -27,7 +27,7 @@ pub(crate) async fn edit_corectness<Connect: EditAnswer>(bot: Bot, msg: Message,
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn edit_answer_text<Connect: EditAnswer>(bot: Bot, msg: Message, dialogue: UserDialogue, (quiz_name, question_name, answer_name): (String, String, String), connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some(text) => {
@@ -45,7 +45,7 @@ pub(crate) async fn edit_answer_text<Connect: EditAnswer>(bot: Bot, msg: Message
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn edit_question_text<Connect: EditQuestion>(bot: Bot, msg: Message, dialogue: UserDialogue, (quiz_name, question_name): (String, String), connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some(new_text) => {
@@ -63,7 +63,7 @@ pub(crate) async fn edit_question_text<Connect: EditQuestion>(bot: Bot, msg: Mes
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn handle_answer<Connect: DeleteAnswer + RetreiveQuestion>(bot: Bot, msg: Message, dialogue: UserDialogue, (quiz_name, question_name, answer_name): (String, String, String), connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some("/back") => {
@@ -97,7 +97,7 @@ pub(crate) async fn handle_answer<Connect: DeleteAnswer + RetreiveQuestion>(bot:
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, dialogue, bot))]
 pub(crate) async fn select_answer<Connect: RetreiveAnswer>(bot: Bot, msg: Message, dialogue: UserDialogue, (quiz_name, question_name): (String, String), connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some(answer) => {
@@ -124,7 +124,7 @@ pub(crate) async fn select_answer<Connect: RetreiveAnswer>(bot: Bot, msg: Messag
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn handle_question<Connect: DeleteQuestion + RetreiveAnswer + RetreiveQuiz>(bot: Bot, msg: Message, dialogue: UserDialogue, (quiz_name, question_name): (String, String), connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some("/back") => {
@@ -159,7 +159,7 @@ pub(crate) async fn handle_question<Connect: DeleteQuestion + RetreiveAnswer + R
     Ok(())
 } 
 
-#[instrument(level = "info")] 
+#[instrument(level = "info", skip(bot, dialogue))] 
 pub(crate) async fn editor_add_answer(bot: Bot, msg: Message, dialogue: UserDialogue, (quiz_name, question_name): (String, String)) -> HandlerResult {
     match msg.text() {
         Some(text) => {
@@ -172,7 +172,7 @@ pub(crate) async fn editor_add_answer(bot: Bot, msg: Message, dialogue: UserDial
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn editor_add_corectness<Connect: CreateAnswer>(bot: Bot, msg: Message, dialogue: UserDialogue, (quiz_name, question_name, answer_name): (String, String, String), connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some("Yes") | Some("Yes✔️") => {
@@ -205,7 +205,7 @@ pub(crate) async fn editor_add_corectness<Connect: CreateAnswer>(bot: Bot, msg: 
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, dialogue, bot))]
 pub(crate) async fn editor_add_question<Connect: CreateQuestion>(bot: Bot, msg: Message, dialogue: UserDialogue, quiz_name: String, connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some(text) => {
@@ -228,7 +228,7 @@ pub(crate) async fn editor_add_question<Connect: CreateQuestion>(bot: Bot, msg: 
 }
 
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn select_question<Connect: RetreiveQuestion>(bot: Bot, msg: Message, dialogue: UserDialogue, quiz_name: String, connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some(question_name) => {
@@ -250,7 +250,7 @@ pub(crate) async fn select_question<Connect: RetreiveQuestion>(bot: Bot, msg: Me
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn select_quiz<QuizRetriever: RetreiveQuiz>(bot: Bot, msg: Message, dialogue: UserDialogue, connection: Arc<QuizRetriever>) -> HandlerResult {
     match msg.text() {
         Some(quiz_name) => {
@@ -273,7 +273,7 @@ pub(crate) async fn select_quiz<QuizRetriever: RetreiveQuiz>(bot: Bot, msg: Mess
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, dialogue, bot))]
 pub(crate) async fn handle_quiz<Connect: DeleteQuiz + RetreiveQuestion>(bot: Bot, msg: Message, dialogue: UserDialogue, quiz_name: String, connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some("/back") => {
@@ -313,7 +313,7 @@ pub(crate) async fn handle_quiz<Connect: DeleteQuiz + RetreiveQuestion>(bot: Bot
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn edit_name<Connect: EditQuiz>(bot: Bot, msg: Message, dialogue: UserDialogue, quiz_name: String, connection: Arc<Connect>) -> HandlerResult {
     match msg.text() {
         Some(new_name) => {
@@ -334,7 +334,7 @@ pub(crate) async fn edit_name<Connect: EditQuiz>(bot: Bot, msg: Message, dialogu
     Ok(())
 }
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn edit_description<Connect: EditQuiz>(bot: Bot, msg: Message, dialogue: UserDialogue, quiz_name: String, connection: Arc<Connect>) -> HandlerResult {
     match msg.text(){
         Some(new_name) => {

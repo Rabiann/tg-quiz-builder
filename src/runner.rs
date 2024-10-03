@@ -17,7 +17,7 @@ use crate::{
     HandlerResult, UserDialogue,
 };
 
-#[instrument(level = "info", skip(connection))]
+#[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn selection<Retreiver: RetreiveQuiz>(
     bot: Bot,
     dialogue: UserDialogue,
@@ -67,7 +67,7 @@ pub(crate) async fn selection<Retreiver: RetreiveQuiz>(
     Ok(())
 }
 
-#[instrument(level = "info")]
+#[instrument(level = "info", skip(bot, dialogue))]
 pub(crate) async fn running_ready(
     bot: Bot,
     dialogue: UserDialogue,
@@ -148,7 +148,7 @@ pub(crate) async fn running_ready(
     Ok(())
 }
 
-#[instrument(level = "info")] 
+#[instrument(level = "info", skip(bot, dialogue))] 
 pub(crate) async fn take_answer(
     bot: Bot,
     dialogue: UserDialogue,
