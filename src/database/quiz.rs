@@ -31,7 +31,14 @@ impl fmt::Display for Quiz {
         for question in self.questions() {
             questions.push_str(&format!("# {}\n", question.to_string()));
         }
-        write!(f, "Title: {}\nDescription: {}\n\nBy @{}\n\nQuestions:{}\n", self.title(), self.description(), self.author(), questions)
+        write!(
+            f,
+            "Title: {}\nDescription: {}\n\nBy @{}\n\nQuestions:{}\n",
+            self.title(),
+            self.description(),
+            self.author(),
+            questions
+        )
     }
 }
 
@@ -39,7 +46,7 @@ impl fmt::Display for Question {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut answers = String::new();
         for (i, answer) in self.answers().into_iter().enumerate() {
-            answers.push_str(&format!("{}){}\n", i+1, answer.to_string()));
+            answers.push_str(&format!("{}){}\n", i + 1, answer.to_string()));
         }
         answers.push('\n');
 
@@ -49,7 +56,12 @@ impl fmt::Display for Question {
 
 impl fmt::Display for Answer {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} ({})", self.text(), if self.is_correct() { 'V' } else { 'X' })
+        write!(
+            f,
+            "{} ({})",
+            self.text(),
+            if self.is_correct() { 'V' } else { 'X' }
+        )
     }
 }
 

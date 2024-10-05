@@ -1,4 +1,4 @@
-use crate::quiz::{Answer, Question, Quiz};
+use crate::database::quiz::{Answer, Question, Quiz};
 
 #[derive(Debug, Clone)]
 pub struct QuizData {
@@ -61,8 +61,8 @@ pub enum QuizState {
     // PART FOR --- EDITING ---
     StartSelect,
     HandleQuiz {
-        quiz_name: String
-    }, 
+        quiz_name: String,
+    },
     HandleQuestion {
         quiz_name: String,
         question_name: String,
@@ -138,7 +138,7 @@ pub enum QuizState {
     HandleAnswer {
         quiz_name: String,
         question_name: String,
-        answer_name: String
+        answer_name: String,
     },
     EditAnswerText {
         quiz_name: String,

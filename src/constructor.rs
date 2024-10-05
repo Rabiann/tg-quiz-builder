@@ -1,12 +1,12 @@
-use std::sync::Arc;
-use teloxide::types::ReplyMarkup;
-use teloxide::{payloads::SendMessageSetters, prelude::Requester, types::Message, Bot};
-use tracing::instrument;
 use crate::database::connection::{CreateQuiz, RetreiveQuiz};
 use crate::database::quiz::{Answer, Question, Quiz};
 use crate::keyboard::{action_keyboard, yes_no_keyboard};
 use crate::state::{QuizData, QuizState};
 use crate::{HandlerResult, UserDialogue};
+use std::sync::Arc;
+use teloxide::types::ReplyMarkup;
+use teloxide::{payloads::SendMessageSetters, prelude::Requester, types::Message, Bot};
+use tracing::instrument;
 
 #[instrument(level = "info", skip(connection, bot, dialogue))]
 pub(crate) async fn receive_quiz_description<DbConnection: RetreiveQuiz>(
@@ -17,14 +17,9 @@ pub(crate) async fn receive_quiz_description<DbConnection: RetreiveQuiz>(
 ) -> HandlerResult {
     match msg.text() {
         Some(title) => {
-            log::info!(
-                "{} receives quiz name {}",
-                msg.chat.username().unwrap(),
-                title
-            );
-
             if let Ok(Some(_)) = connection.retreive_quiz(title).await {
-                bot.send_message(msg.chat.id, "Quiz with already exists. Try again.").await?;
+                bot.send_message(msg.chat.id, "Quiz with already exists. Try again.")
+                    .await?;
             } else {
                 bot.send_message(msg.chat.id, "OK. What is new quiz about?")
                     .await?;
@@ -33,8 +28,8 @@ pub(crate) async fn receive_quiz_description<DbConnection: RetreiveQuiz>(
                         quiz_name: title.to_owned(),
                     })
                     .await?;
-                }
-       }
+            }
+        }
         None => {
             bot.send_message(msg.chat.id, "Please, send a title of the new quiz.")
                 .await?;
@@ -52,12 +47,6 @@ pub(crate) async fn receive_quiz_author(
 ) -> HandlerResult {
     match msg.text() {
         Some(description) => {
-            log::info!(
-                "{} receives quiz description {} for {} quiz",
-                msg.chat.username().unwrap(),
-                description,
-                &title
-            );
             bot.send_message(
                 msg.chat.id,
                 "Do you want to add the first question?(Yes/No)",
@@ -102,11 +91,6 @@ pub(crate) async fn receive_new_question<DbConnection: CreateQuiz>(
                 .await?;
         }
         Some("No") | Some("No❌") => {
-            log::info!(
-                "{} refuses to add a new question and saves {} quiz.",
-                msg.chat.username().unwrap(),
-                &quiz_info.quiz_name
-            );
             let new_quiz = Quiz::new(
                 quiz_info.quiz_name,
                 quiz_info.description,
@@ -150,11 +134,6 @@ pub(crate) async fn receive_new_answer(
 ) -> HandlerResult {
     match msg.text() {
         Some(new_question) => {
-            log::info!(
-                "{} adds a new question {}",
-                msg.chat.username().unwrap(),
-                new_question
-            );
             bot.send_message(msg.chat.id, "OK. What's the answer to your question?")
                 .await?;
             dialogue
@@ -183,13 +162,6 @@ pub(crate) async fn receive_answer_is_correct(
 ) -> HandlerResult {
     match msg.text() {
         Some(answer) => {
-            log::info!(
-                "{} adds answer '{}' to question '{}' in quiz '{}'",
-                msg.chat.username().unwrap(),
-                answer,
-                &new_question,
-                &quiz_info.quiz_name
-            );
             bot.send_message(msg.chat.id, "Got it. Is that answer correct?(Yes/No)")
                 .reply_markup(yes_no_keyboard())
                 .await?;
@@ -221,19 +193,11 @@ pub(crate) async fn receive_add_another_answer_or_question(
     println!("{}", new_answer);
     match msg.text() {
         Some("Yes") | Some("Yes✔️") => {
-            log::info!(
-                "Answer '{}' in question '{}' is correct",
-                &new_answer,
-                &new_question
-            );
             bot.send_message(
                 msg.chat.id,
                 "Okay, that answer is correct. Do you want to add a new answer?(Yes/No)",
             )
             .await?;
-            //
-            //  Logic to save answer
-            //
             let added_answer = Answer::new(new_answer, true);
             answers.push(added_answer);
             dialogue
@@ -245,19 +209,11 @@ pub(crate) async fn receive_add_another_answer_or_question(
                 .await?;
         }
         Some("No") | Some("No❌") => {
-            log::info!(
-                "Answer '{}' in question '{}' is incorrect",
-                &new_answer,
-                &new_question
-            );
             bot.send_message(
                 msg.chat.id,
                 "Okay, that answer is incorrect. Do you want to create a new answer?(Yes/No)",
             )
             .await?;
-            //
-            //  Logic to save answer
-            //
             let added_answer = Answer::new(new_answer, false);
             answers.push(added_answer);
             dialogue
@@ -289,12 +245,6 @@ pub(crate) async fn receive_add_new_answer(
 ) -> HandlerResult {
     match msg.text() {
         Some("Yes") | Some("Yes✔️") => {
-            log::info!(
-                "{} adds other answer to question '{}' in quiz '{}'",
-                msg.chat.username().unwrap(),
-                new_question,
-                &quiz_info.quiz_name
-            );
             bot.send_message(msg.chat.id, "Great. What's the another answer?")
                 .reply_markup(ReplyMarkup::kb_remove())
                 .await?;
@@ -307,20 +257,12 @@ pub(crate) async fn receive_add_new_answer(
                 .await?;
         }
         Some("No") | Some("No❌") => {
-            log::info!(
-                "{} saves question in quiz '{}'",
-                msg.chat.username().unwrap(),
-                &quiz_info.quiz_name
-            );
             bot.send_message(
                 msg.chat.id,
                 "OK. Saving question. Do you want to add another question? (Yes/No)",
             )
             .reply_markup(yes_no_keyboard())
             .await?;
-            //
-            //  Logic to save question
-            //
             let question_added = Question::new(new_question, Some(answers));
             quiz_info.questions.push(question_added);
             dialogue
