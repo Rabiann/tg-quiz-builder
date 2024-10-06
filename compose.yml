@@ -1,0 +1,28 @@
+services:
+  postgres:
+    container_name: tg_postgres_database
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: quizdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 1234
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  bot:
+    container_name: rustquizbot
+    build: .
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - .:/usr/src/app
+    command: "./rustquizbot"
+
+volumes:
+  pgdata:
+    driver: local
